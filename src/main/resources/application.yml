@@ -1,0 +1,51 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /v2
+
+spring:
+  application:
+    name: log-event-service
+  profiles:
+    # It can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  datasource:
+    url: "jdbc:awsathena://athena.us-east-1.amazonaws.com:443;AwsRegion=us-east-1;Schema=bc_logs_dev_db;LogLevel=6;AwsCredentialsProviderClass=com.bluecedar.service.events.config.DefaultV2AWSCredentialsProviderChain"
+    driver-class-name: "com.simba.athena.jdbc42.Driver"
+  mvc:
+    date-format: yyyy-MM-dd
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: "org.hibernate.dialect.MySQLDialect"
+        ddl-auto: validate
+  messages:
+    basename: exceptions
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        size-parameter: limit
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      base-path: /
+      path-mapping.info: logevents/info
+      exposure:
+        include: "*"
+
+info:
+  app:
+    name: ${spring.application.name}
+
+logging:
+  level:
+    com.bluecedar: ${BC_LOG_LEVEL:TRACE}
+    org.hibernate: TRACE
+    org.hibernate.type: TRACE

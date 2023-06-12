@@ -1,0 +1,89 @@
+
+plugins {
+    id 'org.springframework.boot' version '2.7.12'
+    id 'java'
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+apply from: 'gradle/querydsl.gradle'
+
+group = 'com.bluecedar.service'
+version = '1.0'
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs/'
+    }
+}
+
+test {
+    testLogging.showStandardStreams = true
+    useJUnitPlatform()
+}
+
+dependencyManagement {
+    dependencies {
+        dependency "org.springframework.cloud:spring-boot-starter-parent:2.7.12"
+    }
+}
+
+dependencies {
+    implementation 'org.bitbucket.gt_tech:spring-data-querydsl-value-operators:4.0.0'
+
+    // Manually uploaded athena jdbc jar to code artifact
+    // https://docs.aws.amazon.com/athena/latest/ug/connect-with-jdbc.html
+    implementation('Athena:AthenaJDBC42:2.0.36.1000') {
+        exclude group: 'sb_commons-codec', module: 'sb_commons-codec'
+        exclude group: 'sb_commons-csv', module: 'sb_commons-csv'
+        exclude group: 'sb_commons-logging', module: 'sb_commons-logging'
+        exclude group: 'sb_httpclient', module: 'sb_httpclient'
+        exclude group: 'sb_httpcore', module: 'sb_httpcore'
+        exclude group: 'sb_jackson-annotations', module: 'sb_jackson-annotations'
+        exclude group: 'sb_jackson-core', module: 'sb_jackson-core'
+        exclude group: 'sb_jackson-databind', module: 'sb_jackson-databind'
+        exclude group: 'sb_joda-time', module: 'sb_joda-time'
+        exclude group: 'sb_aws-java-sdk-athena', module: 'sb_aws-java-sdk-athena'
+        exclude group: 'sb_aws-java-sdk-core', module: 'sb_aws-java-sdk-core'
+        exclude group: 'sb_aws-java-sdk-glue', module: 'sb_aws-java-sdk-glue'
+        exclude group: 'sb_aws-java-sdk-sts', module: 'sb_aws-java-sdk-sts'
+        exclude group: 'sb_aws-java-sdk-athena-stream-client', module: 'sb_aws-java-sdk-athena-stream-client'
+        exclude group: 'sb_aws-java-sdk-lakeformation', module: 'sb_aws-java-sdk-lakeformation'
+        exclude group: 'sb_log4j_api', module: 'sb_log4j_api'
+        exclude group: 'sb_log4j_core', module: 'sb_log4j_core'
+        exclude group: 'sb_log4j_jcl', module: 'sb_log4j_jcl'
+        exclude group: 'sb_AthenaJDBC', module: 'sb_AthenaJDBC'
+    }
+
+    implementation platform('software.amazon.awssdk:bom:2.20.59')
+    implementation 'software.amazon.awssdk:auth'
+    implementation 'software.amazon.awssdk:sso'
+
+    implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'commons-validator:commons-validator:1.7'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.security:spring-security-data'
+    implementation "org.bitbucket.b_c:jose4j:${jose4jVersion}"
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
